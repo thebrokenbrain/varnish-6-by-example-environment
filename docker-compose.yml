@@ -1,0 +1,39 @@
+version: "3.7"
+
+services:
+  varnish:
+    image: varnish:$VARNISH_TAG
+    container_name: varnish
+    volumes:
+      - ./vcl/:/etc/varnish/
+    ports:
+      - "80:80"
+    tmpfs:
+      - /var/lib/varnish:exec
+    environment:
+      - VARNISH_SIZE=2G
+    command: "-p default_keep=300"
+    depends_on:
+      - backend
+
+  backend:
+    image: drupal:$BACKEND_TAG
+    container_name: backend
+    volumes:
+      - /var/www/html/modules
+      - /var/www/html/profiles
+      - /var/www/html/themes
+      - /var/www/html/sites
+    restart: always
+
+  db:
+    image: mariadb:$MARIADB_TAG
+    container_name: db
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: $DB_ROOT_PASSWORD
+      MARIADB_DATABASE: $DB_NAME
+      MARIADB_USER: $DB_USER
+      MARIADB_PASSWORD: $DB_PASSWORD
+    depends_on:
+      - backend
