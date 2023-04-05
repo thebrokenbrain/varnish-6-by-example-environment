@@ -11,7 +11,6 @@ setup deploy:
 	@docker-compose exec backend composer require drush/drush
 	@echo "💧 Installing Drupal"
 	@docker-compose exec backend vendor/bin/drush si -y --db-url=mysql://$(DB_USER):$(DB_PASSWORD)@db:3306/$(DB_NAME) --account-name=$(ACCOUNT_NAME) --account-pass=$(ACCOUNT_PASSWORD) --site-name=$(SITE_NAME) --site-mail=$(SITE_MAIL) --account-mail=$(SITE_MAIL)
-	echo "drush si -y --db-url=mysql://$(DB_USER):$(DB_PASSWORD)@db:3306/$(DB_NAME) --account-name=$(ACCOUNT_NAME) --account-pass=$(ACCOUNT_PASSWORD) --site-name=$(SITE_NAME) --site-mail=$(SITE_MAIL) --account-mail=$(SITE_MAIL)"
 	@echo "🔧 Fix permissions"
 	@docker-compose exec backend chmod -R 777 web/sites/default/files
 	@echo "🧹 Clearing the cache"
